@@ -159,3 +159,95 @@ mvn compile exec:java -Dexec.mainClass=lsp.Main
 ### Reflexión
 
 LSP nos enseña que la herencia no es solo reutilización de código: es un contrato de comportamiento. Separar capacidades opcionales en interfaces (`Walkable`) en lugar de meterlas en la clase base evita que las subclases hereden responsabilidades que no pueden cumplir. El compilador se convierte en un aliado que detecta violaciones antes de que lleguen a producción.
+
+---
+
+## Interface Segregation Principle (ISP)
+
+### Definición
+
+> "Un cliente no debería verse obligado a depender de interfaces que no utiliza."
+
+Es preferible tener muchas interfaces pequeñas y específicas que una sola interfaz de propósito general.
+
+---
+
+### Problema que resuelve
+
+Sin ISP, una interfaz `Device` con `turnOn()`, `turnOff()` y `charge()` obligaba a `DisposableCamera` a implementar `charge()` aunque no sea recargable, forzando un `UnsupportedOperationException` en tiempo de ejecución.
+
+---
+
+### Solución Aplicada con ISP
+
+```
+src/main/java/isp/
+├── Switchable.java        → Interfaz para encender/apagar (todos los dispositivos)
+├── Chargeable.java        → Interfaz solo para dispositivos recargables
+├── Phone.java             → Implementa Switchable + Chargeable
+├── DisposableCamera.java  → Implementa solo Switchable (sin charge)
+└── Main.java              → Prueba ambos dispositivos
+```
+
+`DisposableCamera` ya no está obligada a implementar `charge()`. El compilador impide llamarlo — el error ocurre en compilación, no en ejecución.
+
+---
+
+### Cómo ejecutar
+
+```bash
+mvn compile exec:java -Dexec.mainClass=isp.Main
+```
+
+---
+
+### Reflexión
+
+El ISP nos enseña que interfaces demasiado amplias crean acoplamientos innecesarios. Al dividir `Device` en `Switchable` y `Chargeable`, cada clase implementa solo lo que realmente puede hacer. Si en el futuro agregamos un reloj mecánico, simplemente implementa `Switchable` sin lidiar con métodos irrelevantes. Las interfaces pequeñas hacen el código más cohesivo y seguro.
+
+*Nota: Revisa las capturas de pantalla adjuntas para verificar la ejecución limpia sin excepciones.*
+
+---
+
+## Dependency Inversion Principle (DIP)
+
+### Definición
+
+> "Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones."
+> "Las abstracciones no deben depender de detalles. Los detalles deben depender de abstracciones."
+
+---
+
+### Problema que resuelve
+
+Sin DIP, `PaymentProcessor` instanciaba `CreditCardPayment` directamente dentro de su constructor. Cambiar a PayPal o Crypto requería modificar `PaymentProcessor` — un módulo de alto nivel que no debería saber nada de los detalles de pago.
+
+---
+
+### Solución Aplicada con DIP
+
+```
+src/main/java/dip/
+├── PaymentMethod.java       → Interfaz (abstracción) que define processPayment
+├── CreditCardPayment.java   → Implementación concreta para tarjeta de crédito
+├── PayPalPayment.java       → Implementación concreta para PayPal
+├── CryptoPayment.java       → Implementación concreta para Crypto
+├── PaymentProcessor.java    → Módulo de alto nivel, depende de PaymentMethod
+└── Main.java                → Inyecta la implementación deseada desde afuera
+```
+
+`PaymentProcessor` recibe cualquier `PaymentMethod` por constructor (inyección de dependencias). Agregar un nuevo método de pago solo requiere crear una nueva clase — sin tocar `PaymentProcessor`.
+
+---
+
+### Cómo ejecutar
+
+```bash
+mvn compile exec:java -Dexec.mainClass=dip.Main
+```
+
+---
+
+### Reflexión
+
+DIP invierte la dirección del acoplamiento: en lugar de que el módulo de alto nivel conozca los detalles, son los detalles los que se adaptan al contrato definido por la abstracción. La inyección de dependencias por constructor hace explícito qué implementación se usa y facilita reemplazarla o probarla sin modificar nada del código existente. Es el principio que une y habilita a todos los demás.

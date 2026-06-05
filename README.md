@@ -251,3 +251,65 @@ mvn compile exec:java -Dexec.mainClass=dip.Main
 ### Reflexión
 
 DIP invierte la dirección del acoplamiento: en lugar de que el módulo de alto nivel conozca los detalles, son los detalles los que se adaptan al contrato definido por la abstracción. La inyección de dependencias por constructor hace explícito qué implementación se usa y facilita reemplazarla o probarla sin modificar nada del código existente. Es el principio que une y habilita a todos los demás.
+
+---
+
+## Reflexiones Individuales
+
+### Estudiante 1
+
+El principio que más me costó entender fue el de Inversión de Dependencias (DIP). Al principio no veía por qué era un problema que `PaymentProcessor` creara su propio `CreditCardPayment` adentro. Pensé que era solo una forma de organizar el código, pero cuando intenté agregar PayPal me di cuenta de que tenía que entrar a modificar una clase que ya funcionaba, y eso me hizo entender el problema real. Una vez que usé la interfaz y pasé la implementación por constructor, todo encajó.
+
+Creo que SOLID mejora el diseño porque hace que el código sea más fácil de cambiar sin miedo. Cuando cada clase tiene una sola responsabilidad y depende de abstracciones, puedes modificar una parte sin preocuparte de romper el resto.
+
+En proyectos futuros aplicaría DIP desde el inicio, especialmente cuando trabajo con servicios externos como APIs de pago o de notificaciones. En lugar de instanciar el servicio directo, definiría una interfaz y pasaría la implementación desde afuera. Así si el proveedor cambia, solo cambio la implementación, no la lógica principal.
+
+---
+
+### Estudiante 2
+
+Para mí el más desafiante fue LSP. Entender que la herencia no es solo "reutilizar código" sino que es un contrato de comportamiento me tomó un tiempo. El ejemplo del `Fish` que no puede caminar me pareció obvio en teoría, pero cuando lo vi en código y vi cómo el compilador directamente te impide tratar un pez como `Walkable`, ahí lo entendí de verdad. Lo que me costó fue decidir qué va en la clase base y qué va en una interfaz separada.
+
+SOLID mejora el diseño porque reduce las sorpresas. Cuando las clases cumplen los principios, el código hace lo que uno espera que haga, sin excepciones inesperadas ni comportamientos raros en producción.
+
+El principio que más aplicaría es LSP, porque en proyectos anteriores he cometido exactamente ese error: poner métodos en una clase base que no todas las subclases pueden cumplir. De ahora en adelante voy a usar interfaces para comportamientos opcionales y dejar la clase base solo con lo que realmente es común a todos.
+
+---
+
+### Estudiante 3
+
+El principio más desafiante fue SRP, no porque sea difícil de entender sino porque es difícil de aplicar bien. Es fácil decir "cada clase tiene una responsabilidad", pero en la práctica cuesta decidir dónde termina una responsabilidad y empieza otra. Por ejemplo, al refactorizar `UserManager` dudé si la validación debía estar dentro del mismo manager o en una clase aparte. Al final separarlo fue la decisión correcta, pero no fue inmediata.
+
+SOLID hace que trabajar en equipo sea más ordenado. Si cada clase tiene una sola responsabilidad y depende de interfaces, dos personas pueden trabajar en partes distintas del sistema sin pisarse. Eso es algo que valoro mucho.
+
+Aplicaría SRP en cualquier proyecto desde el principio. Cada vez que veo una clase que hace más de una cosa, ya sé que en algún momento va a ser un dolor de cabeza. Prefiero dividirla desde el inicio aunque parezca "demasiado" para algo pequeño.
+
+---
+
+### Estudiante 4
+
+Lo que más me costó fue ISP. Tenía claro que las interfaces muy grandes son un problema, pero al momento de dividir no sabía cuántas interfaces crear ni cómo nombrarlas. En el ejercicio de `Device` dividirla en `Switchable` y `Chargeable` se sentía lógico, pero me pregunto qué pasa en proyectos más grandes donde hay muchos más métodos. Creo que ahí es donde se vuelve más complicado saber cuándo parar de dividir.
+
+SOLID mejora el diseño porque cada principio ataca un tipo de problema diferente. SRP evita clases sobrecargadas, OCP evita tocar código que funciona, LSP garantiza que la herencia sea predecible, ISP evita implementaciones forzadas, y DIP reduce el acoplamiento. Juntos hacen que el código sea mucho más mantenible.
+
+Aplicaría ISP en proyectos donde trabajo con dispositivos o sistemas que tienen comportamientos muy variados. También lo veo útil en sistemas de roles de usuario, donde no todos los usuarios pueden hacer las mismas cosas. En lugar de una interfaz gigante, interfaces pequeñas por capacidad.
+
+---
+
+### Estudiante 5
+
+El más desafiante para mí fue OCP. Entender que el código debe estar "cerrado para modificación" sonaba contradictorio al principio, porque siempre pensé que modificar código era normal. La clave fue entender que lo que no debe cambiar es la lógica existente, y que la extensión se hace creando cosas nuevas, no tocando las viejas. Cuando agregué `FaxNotification` sin tocar `NotificationService` fue el momento en que lo entendí completamente.
+
+Creo que SOLID mejora el software porque lo hace más fácil de mantener a largo plazo. Al principio parece que requiere más trabajo porque hay más clases e interfaces, pero cuando llega el momento de hacer cambios, todo es mucho más limpio y menos arriesgado.
+
+En futuros proyectos aplicaría OCP en cualquier parte del sistema donde se esperen extensiones frecuentes, como catálogos de productos, tipos de descuento, o métodos de autenticación. Definir una interfaz desde el inicio y agregar implementaciones nuevas sin tocar nada existente es exactamente el tipo de diseño que facilita el trabajo cuando el proyecto crece.
+
+---
+
+### Estudiante 6
+
+Para mí todos los principios fueron útiles, pero el que más trabajo me costó aplicar fue DIP porque requiere cambiar la forma en que uno piensa al crear objetos. Estaba acostumbrado a hacer `new` dentro de la clase cuando necesitaba algo, y cambiar eso por recibir la dependencia desde afuera se sentía raro al principio. Pero una vez que lo practiqué con el `PaymentProcessor`, entendí que así el código queda mucho más flexible y fácil de probar.
+
+SOLID mejora el diseño de software porque obliga a pensar en las responsabilidades de cada pieza antes de escribirla. Eso reduce los problemas que aparecen después, cuando el proyecto ya es más grande y los cambios son más costosos.
+
+El principio que más aplicaría en proyectos actuales es SRP, porque es el más fácil de empezar a usar y tiene un impacto inmediato. Cuando una clase hace demasiadas cosas, cualquier cambio pequeño puede romper algo inesperado. Dividir bien las responsabilidades desde el inicio ahorra muchos dolores de cabeza después.
